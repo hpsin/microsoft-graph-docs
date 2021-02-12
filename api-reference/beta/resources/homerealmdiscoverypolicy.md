@@ -13,7 +13,11 @@ Namespace: microsoft.graph
 
 [!INCLUDE [beta-disclaimer](../../includes/beta-disclaimer.md)]
 
-Represents a policy to control Azure Active Directory authentication behavior for federated users, in particular for auto-acceleration and user authentication restrictions in federated domains. You can set homeRealmDiscoveryPolicy for all service principals in your organization, or for specific service principals in your organization.  For more scenario and policy details see [Configure Azure AD sign in behavior for an application by using a Home Realm Discovery policy](/azure/active-directory/manage-apps/configure-authentication-for-federated-users-portal) as well as [Sign-in to Azure Active Directory using email as an alternate login ID](/azure/active-directory/authentication/howto-authentication-use-email-signin).
+Represents a policy to control Azure Active Directory authentication behavior for federated users, in particular for auto-acceleration and user authentication restrictions in federated domains. You can set **homeRealmDiscoveryPolicy** for all service principals in your organization, or for specific service principals in your organization. For more scenario and policy details, see deep-dives on each component:
+
+* [Configure Azure AD sign in behavior for an application by using a Home Realm Discovery policy](/azure/active-directory/manage-apps/configure-authentication-for-federated-users-portal)
+* [Sign-in to Azure Active Directory using email as an alternate login ID](/azure/active-directory/authentication/howto-authentication-use-email-signin)
+* [Disable domain hint acceleration for specific domains and applications](/azure/active-directory/manage-apps/configure-domain-hints-for-passwordless-users)
 
 Inherits from [stsPolicy](stsPolicy.md).
 
@@ -53,7 +57,8 @@ The properties below form the JSON object that represents a token lifetime polic
     "{\"HomeRealmDiscoveryPolicy\":
      {\"AccelerateToFederatedDomain\":true,
       \"PreferredDomain\":\"federated.example.edu\",
-      \"AlternateIdLogin\":{\"Enabled\":true}}}"
+      \"AlternateIdLogin\":{\"Enabled\":true},
+      \"DomainHintPolicy\": {\"IgnoreDomainHintForDomains\":[\"Contoso.example.edu\"], \"RespectDomainHintForDomains\": [], \"IgnoreDomainHintForApps\": [\"1234abcd1234-8765-483c-9dea-7de4b5d0a54a\"], \"RespectDomainHintForApps\":[]}}}"
   ]
 ```
 
@@ -63,6 +68,7 @@ The properties below form the JSON object that represents a token lifetime polic
 |PreferredDomain|String| Specifies a domain to accelerate sign-in to. It can be omitted if the tenant has only one federated domain. If it is omitted, and there is more than one verified federated domain, this policy has no effect. Required if **AccelerateToFederatedDomain** is `true`.|
 |AllowCloudPasswordValidation|Boolean| Set to `true` to allow an application to authenticate a federated user by presenting username/password credentials directly to the Azure Active Directory token endpoint. Only works if Password Hash Sync is enabled. Optional.|
 |AlternateIdLogin| Json |Set to {"Enabled": true} to allow Azure AD sign-in using email as [an alternate login ID](/azure/active-directory/authentication/howto-authentication-use-email-signin). Only works when **IsOrganizationDefault** is set to `true`. Optional.|
+|DomainHintPolicy | Json | A complex object [defining which applications and domains should ignore or continue to accept domain hints](/azure/active-directory/manage-apps/configure-domain-hints-for-passwordless-users), so that users with cloud-managed credentials like FIDO can use them reliably. Domain hints otherwise will send the user directly to a federated IDP, where their cloud managed credentials will not be offered. Only works when **IsOrganizationDefault** is set to `true`. Optional.|
 
 ## Relationships
 
